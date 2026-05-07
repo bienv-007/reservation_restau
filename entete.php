@@ -28,22 +28,6 @@ $page = basename($_SERVER['PHP_SELF']);
             color: white;
         }
 
-        .nav-recettes .nav-link {
-            color: orange;
-        }
-
-        .nav-apropos .nav-link {
-            color: blue;
-        }
-
-        .nav-reservation .nav-link {
-            color: purple;
-        }
-
-        .nav-contact .nav-link {
-            color: green;
-        }
-
         /* Lien actif */
         .nav-link.active {
             font-weight: bold;
@@ -60,7 +44,7 @@ $page = basename($_SERVER['PHP_SELF']);
     elseif($page == 'contact.php') echo 'nav-contact';
 ?>">
 
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+<nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container">
         <a class="navbar-brand" href="index.php">THE SUBLIMINAL</a>
 
