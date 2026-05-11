@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </span>
         </center>
         <section>
-       <form action="">
+       <form>
         <center>
              <h3 style="color: orange; font-family: Edwardian Script ITC Regular; font-size: 50px;">
             ____ <br>

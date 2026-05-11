@@ -1,8 +1,47 @@
+<?php 
+
+include 'connexion_db/connexion.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $nom = $_POST['nom'];
+    $email = $_POST['email'];
+    $message = $_POST['message'];
+
+    $sql = "INSERT INTO contacts(nom_client, email, message) 
+            VALUES (?, ?, ?)";
+
+    $stmt = $connexion->prepare($sql);
+
+    if ($stmt->execute([$nom, $email, $message])) {
+
+        echo "
+        <script>
+            alert('Message envoyé avec succès');
+        </script>
+        ";
+    } 
+    else {
+
+        echo "
+        <script>
+            alert('Erreur lors de l\\'envoi du message');
+        </script>
+        ";
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Contacts</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -161,7 +200,7 @@
 
     </header>
 
-    <form action="">
+    <form action="" method="POST">
 
         <center>
 
@@ -206,7 +245,7 @@
         <br><br>
 
         <button 
-            type="button" 
+            type="submit" 
             onclick="nameError(); emaiError(); msgErreur();"
         >
             Envoyer
@@ -214,7 +253,7 @@
 
     </form>
 
-<?php include 'footer.php';?>
+    <?php include 'footer.php';?>
 
     <script type="text/javascript">
 
@@ -272,4 +311,5 @@
     </script>
 
 </body>
+
 </html>
