@@ -1,3 +1,27 @@
+<?php
+
+require_once 'connexion_db/connexion.class.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $nom = $_POST['nom'];
+    $nbre_personne = $_POST['selectionner'];
+    $date_heure = $_POST['datte'];
+
+    $sql = "INSERT INTO reservation(nom_client, nbre_personnes, date_reservation) VALUES (?, ?, ?)";
+
+    $stmt = $connexion->prepare($sql);
+
+    $stmt->execute([$nom,$nbre_personne,$date_heure]);
+
+    if ($stmt->execute()) {
+    echo "<script>alert('Réservation enregistrée avec succès');</script>";
+} else {
+    echo "<script>alert('Erreur lors de la réservation');</script>";
+}
+}
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -113,10 +137,10 @@
             <option value="famille">
               Pour la famille
             </option>
-            <option value="famille">
+            <option value="mariage">
               Mariage
             </option>
-            <option value="famille">
+            <option value="anniversaire">
               Anniversaire
             </option>
           </select>
