@@ -1,3 +1,33 @@
+<?php
+if (isset($_POST['email'])) {
+
+    // $nom = $_POST['nom'];
+    $email = $_POST['email'];
+    // $message = $_POST['message'];
+
+    $sql = "INSERT INTO news_letter(email) 
+            VALUES (?)";
+
+    $stmt = $connexion->prepare($sql);
+
+    if ($stmt->execute([$email])) {
+
+        echo "
+        <script>
+            alert('vous avez ete enregistre avec succès');
+        </script>
+        ";
+    } 
+    else {
+
+        echo "
+        <script>
+            alert('Erreur lors de l\\'enregistrement');
+        </script>
+        ";
+    }
+}
+?>
 <footer>
 
     <h4 style="font-weight: bold;">
@@ -35,9 +65,10 @@
     </span>
 
     <br><br>
-
+<form style="padding: 20px; background: transparent" action="" method="post">
     <input 
         type="email" 
+        name="email"
         placeholder="Souscrire à notre newsletter"
         style="
             width: 320px;
@@ -47,9 +78,9 @@
             outline: none;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         "
-    >
+    ><br><br>
 
-    <button 
+    <button type="submit"
         style="
             padding: 12px 25px;
             border: none;
@@ -67,6 +98,7 @@
     >
         Souscrire
     </button>
+</form>
 
     <br><br>
 

@@ -2,7 +2,7 @@
 
 include 'connexion_db/connexion.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST['nom']) && isset($_POST['email']) && isset($_POST['message'])) {
 
     $nom = $_POST['nom'];
     $email = $_POST['email'];
@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-family: sans-serif;
         }
 
-        form{
+        .form_msg{
             width: 500px;
             margin: auto;
             background-color: rgba(255,255,255,0.95);
@@ -155,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         @media screen and (max-width: 740px){
 
-            form{
+            .form_msg{
                 width: 90%;
             }
 
@@ -200,7 +200,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </header>
 
-    <form action="" method="POST">
+    <form class="form_msg" action="" method="POST">
 
         <center>
 
