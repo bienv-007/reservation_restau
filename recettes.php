@@ -137,18 +137,6 @@
         </a>
     </article>
   </section><br><br><br>
-   <footer>
-    THE SUBLIMINAL 
-    <span><br>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium ab odio repellat, accusantium <br>libero veniam quod nihil aliquam vel consequuntur.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium ab odio repellat, accusantium <br>libero veniam quod nihil aliquam vel consequuntur.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium ab odio repellat, accusantium <br>libero veniam quod nihil aliquam vel consequuntur.
-    </span>
-    <hr>
-        <span>
-            Contacts : +243 975783421
-        </span><br>
-        &copy; 2025 projet final developpement web 1
-  </footer>
+<?php include 'footer.php';?>
 </body>
 </html>

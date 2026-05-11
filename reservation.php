@@ -1,6 +1,6 @@
 <?php
 
-require_once 'connexion_db/connexion.class.php';
+include 'connexion_db/connexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
