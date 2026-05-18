@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recettes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         .Bienvenu{
@@ -29,29 +29,38 @@
         header a:hover{
             border-bottom: solid 2px orange;
         }
-        img{
-            width: 100%;
-            border-radius: 10px;
+        
+        /* FORCE TOUTES LES IMAGES À LA MÊME HAUTEUR STRICTE */
+        .recipe-img {
+            height: 200px; /* Tu peux changer cette valeur (ex: 220px, 250px) selon tes goûts */
+            object-fit: cover; /* Coupe l'image proprement sans la déformer */
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
         }
+
+        /* FORCE TOUS LES ARTICLES À LA MÊME HAUTEUR */
         .oeufs{
-            width: 500px;
+            max-width: 500px;
+            width: 100%;
+            height: 100%; /* S'étire sur toute la hauteur de la ligne */
             background: #ffffff;
             box-shadow: 0 3px 5px #0000001f;
             border-radius: 20px;
-            padding-bottom: 20px;
-            margin: auto;
+            border: none; /* Supprime la bordure par défaut des cartes Bootstrap */
         }
+        
         .section1{
             padding-top: 50px;
             margin: auto;
-            gap: 25px;
         }
         .monlien{
             background: orange;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 10px;
             text-decoration: none;
             color: #000;
+            display: inline-block;
+            transition: background 0.2s;
         }
         .monlien:hover{
             background: rgba(255, 166, 0, 0.856);
@@ -67,6 +76,17 @@
           background-repeat: no-repeat;
           background-size: cover;
           background-attachment: fixed;
+        }
+        img:hover{
+          transform: scale(1.05);
+          /* transition: 0.3s; */
+        }
+        img{
+          transition: 0.3s;
+          /* overflow: hidden; */
+        }
+        .card{
+          overflow:hidden;
         }
     </style>
 </head>
@@ -85,58 +105,79 @@
       </span>
     </center>
   </header>
-  <section class="container section1 row">
-    <article class="oeufs col-12 col-md-5 col-lg-6 pt-3">
-        <img src="img/salad-chicken.jpg" alt="les oeufs" class="img-fluid">
-        <h4 class="pt-3">
-            Salades au Poulet
-        </h4>
-        <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.
-        </p>
-        <a href="#" class="monlien">
-            Commander
-        </a>
-    </article>
-    <article class="oeufs col-12 col-md-5 col-lg-6 pt-3">
-        <img src="img/burger.jpg" alt="les oeufs" class="img-fluid">
-        <h4 class="pt-3">
-            Un cheese burger
-        </h4>
-        <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.
-        </p>
-        <a href="#" class="monlien">
-            Commander
-        </a>
-    </article>
-  </section>
-  <section class="container section1 row">
-    <article class="oeufs col-12 col-md-5 col-lg-6 pt-3">
-        <img src="img/crusted-chicken.jpg" alt="les oeufs" class="img-fluid">
-        <h4 class="pt-3">
-            Poulet à la salade
-        </h4>
-        <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.
-        </p>
-        <a href="#" class="monlien">
-            Commander
-        </a>
-    </article>
-    <article class="oeufs col-12 col-md-5 col-lg-6 pt-3">
-        <img src="img/eggs.jpg" alt="les oeufs" class="img-fluid">
-        <h4 class="pt-3">
-            Les oeufs boullies aux salades
-        </h4>
-        <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.
-        </p>
-        <a href="#" class="monlien">
-            Commander
-        </a>
-    </article>
-  </section><br><br><br>
+
+  <div class="container section1">
+    <!-- row-cols-lg-3 force l'affichage strict de 3 éléments par ligne sur grand écran -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
+      
+      <!-- Article 1 -->
+      <div class="col">
+        <div class="card h-100 oeufs">
+            <img src="img/salad-chicken.jpg" alt="les oeufs" class="card-img-top recipe-img">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <h4>Salades au Poulet</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.</p>
+                </div>
+                <div>
+                    <a href="#" class="monlien">Commander</a>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Article 2 -->
+      <div class="col">
+        <div class="card h-100 oeufs">
+            <img src="img/burger.jpg" alt="les oeufs" class="card-img-top recipe-img">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <h4>Un cheese burger</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe?</p>
+                </div>
+                <div>
+                    <a href="#" class="monlien">Commander</a>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Article 3 -->
+      <div class="col">
+        <div class="card h-100 oeufs">
+            <img src="img/crusted-chicken.jpg" alt="les oeufs" class="card-img-top recipe-img">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <h4>Poulet à la salade</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.</p>
+                </div>
+                <div>
+                    <a href="#" class="monlien">Commander</a>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Article 4 -->
+      <div class="col">
+        <div class="card h-100 oeufs">
+            <img src="img/eggs.jpg" alt="les oeufs" class="card-img-top recipe-img">
+            <div class="card-body d-flex flex-column justify-content-between p-4">
+                <div>
+                    <h4>Les oeufs boullies aux salades</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.</p>
+                </div>
+                <div>
+                    <a href="#" class="monlien">Commander</a>
+                </div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <br><br><br>
 <?php include 'footer.php';?>
 </body>
 </html>
