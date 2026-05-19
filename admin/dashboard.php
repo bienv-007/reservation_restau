@@ -1,3 +1,10 @@
+<?php 
+session_start();
+if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
+    header("Location: authentification.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
