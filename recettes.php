@@ -1,3 +1,13 @@
+<?php
+include 'connexion_db/connexion.php';
+
+$requete = $connexion->query("SELECT titre, description, image FROM recettes ORDER BY date_publication DESC");
+$recettes = [];
+
+if ($requete) {
+    $recettes = $requete->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,72 +117,34 @@
   </header>
 
   <div class="container section1">
-    <!-- row-cols-lg-3 force l'affichage strict de 3 éléments par ligne sur grand écran -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
-      
-      <!-- Article 1 -->
-      <div class="col">
-        <div class="card h-100 oeufs">
-            <img src="img/salad-chicken.jpg" alt="les oeufs" class="card-img-top recipe-img">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
-                <div>
-                    <h4>Salades au Poulet</h4>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.</p>
-                </div>
-                <div>
-                    <a href="#" class="monlien">Commander</a>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      <!-- Article 2 -->
-      <div class="col">
-        <div class="card h-100 oeufs">
-            <img src="img/burger.jpg" alt="les oeufs" class="card-img-top recipe-img">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
-                <div>
-                    <h4>Un cheese burger</h4>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe?</p>
-                </div>
-                <div>
-                    <a href="#" class="monlien">Commander</a>
+      <?php if (count($recettes) > 0): ?>
+        <?php foreach ($recettes as $recette): ?>
+          <div class="col">
+            <div class="card h-100 oeufs">
+                <img src="<?= htmlspecialchars($recette['image']) ?>" alt="<?= htmlspecialchars($recette['titre']) ?>" class="card-img-top recipe-img">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <div>
+                        <h4><?= htmlspecialchars($recette['titre']) ?></h4>
+                        <p><?= htmlspecialchars($recette['description']) ?></p>
+                    </div>
+                    <div>
+                        <a href="#" class="monlien">Commander</a>
+                    </div>
                 </div>
             </div>
-        </div>
-      </div>
-
-      <!-- Article 3 -->
-      <div class="col">
-        <div class="card h-100 oeufs">
-            <img src="img/crusted-chicken.jpg" alt="les oeufs" class="card-img-top recipe-img">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
-                <div>
-                    <h4>Poulet à la salade</h4>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.</p>
-                </div>
-                <div>
-                    <a href="#" class="monlien">Commander</a>
-                </div>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div class="col">
+          <div class="card h-100 oeufs">
+            <div class="card-body p-4">
+              <h4>Aucune recette publiée</h4>
+              <p>Les recettes ajoutées depuis l'administration s'afficheront ici.</p>
             </div>
+          </div>
         </div>
-      </div>
-
-      <!-- Article 4 -->
-      <div class="col">
-        <div class="card h-100 oeufs">
-            <img src="img/eggs.jpg" alt="les oeufs" class="card-img-top recipe-img">
-            <div class="card-body d-flex flex-column justify-content-between p-4">
-                <div>
-                    <h4>Les oeufs boullies aux salades</h4>
-                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo, odio saepe? Saepe sequi velit natus.</p>
-                </div>
-                <div>
-                    <a href="#" class="monlien">Commander</a>
-                </div>
-            </div>
-        </div>
-      </div>
+      <?php endif; ?>
 
     </div>
   </div>
