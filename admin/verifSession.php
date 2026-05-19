@@ -13,7 +13,7 @@ if (isset($_POST['username']) && isset($_POST['password'])){
         // Authentification réussie
         $_SESSION['admin'] = $username; // Stocker le nom d'utilisateur dans la session
         $_SESSION['mdp'] = $password; // Stocker le mot de passe dans la session (optionnel, à éviter pour des raisons de sécurité)
-        header("Location: dashboard.php"); // Rediriger vers le tableau de bord
+        header("Location: index.php"); // Rediriger vers le tableau de bord
         exit();
     } else {
         // Authentification échouée
