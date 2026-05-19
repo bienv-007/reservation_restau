@@ -127,7 +127,7 @@ if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
         <ul class="nav-links">
             <a href="index.php"><li>Tableau de bord</li></a>
             <a href="recettes.php"><li>Recettes (Plats)</li></a>
-            <a href="commandes.php"><li>Commandes</li></a>
+            <a href="messages.php"><li>Messages</li></a>
             <a href="reservations.php"><li>Réservations</li></a>
             <a href="deconnexion.php"><li>Se deconnecter</li></a>
         </ul>

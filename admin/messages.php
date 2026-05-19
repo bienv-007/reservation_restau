@@ -7,15 +7,15 @@ if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
     exit();
 }
 
-$requete = $connexion->query("SELECT nom_client, nbre_personnes, date_reservation FROM reservation ORDER BY date_reservation DESC");
-$reservations = $requete->fetchAll(PDO::FETCH_ASSOC);
+$requete = $connexion->query("SELECT nom_client, email, message FROM contacts ORDER BY nom_client ASC");
+$messages = $requete->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Resto - Réservations</title>
+    <title>Admin Resto - Messages</title>
     <style>
         :root {
             --primary: #e67e22;
@@ -93,12 +93,19 @@ $reservations = $requete->fetchAll(PDO::FETCH_ASSOC);
 
         th, td {
             text-align: left;
+            vertical-align: top;
             padding: 12px;
             border-bottom: 1px solid #ddd;
         }
 
         th {
             background-color: var(--light);
+        }
+
+        .message {
+            line-height: 1.5;
+            max-width: 520px;
+            white-space: pre-wrap;
         }
 
         .empty {
@@ -119,40 +126,40 @@ $reservations = $requete->fetchAll(PDO::FETCH_ASSOC);
         <ul class="nav-links">
             <a href="index.php"><li>Tableau de bord</li></a>
             <a href="recettes.php"><li>Recettes (Plats)</li></a>
-            <a href="messages.php"><li>Messages</li></a>
-            <a href="reservations.php"><li class="active">Réservations</li></a>
+            <a href="messages.php"><li class="active">Messages</li></a>
+            <a href="reservations.php"><li>Réservations</li></a>
             <a href="deconnexion.php"><li>Se deconnecter</li></a>
         </ul>
     </div>
 
     <div class="main-content">
         <div class="header">
-            <h1>Réservations</h1>
+            <h1>Messages</h1>
             <div class="user-info">Admin : <?= htmlspecialchars($_SESSION['admin']) ?></div>
         </div>
 
         <div class="table-container">
-            <h3>Liste des réservations</h3>
+            <h3>Messages reçus</h3>
             <table>
                 <thead>
                     <tr>
                         <th>Nom du client</th>
-                        <th>Nombre de personnes</th>
-                        <th>Date et heure</th>
+                        <th>Email</th>
+                        <th>Message</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (count($reservations) > 0): ?>
-                        <?php foreach ($reservations as $reservation): ?>
+                    <?php if (count($messages) > 0): ?>
+                        <?php foreach ($messages as $message): ?>
                             <tr>
-                                <td><?= htmlspecialchars($reservation['nom_client']) ?></td>
-                                <td><?= htmlspecialchars($reservation['nbre_personnes']) ?></td>
-                                <td><?= htmlspecialchars($reservation['date_reservation']) ?></td>
+                                <td><?= htmlspecialchars($message['nom_client']) ?></td>
+                                <td><?= htmlspecialchars($message['email']) ?></td>
+                                <td class="message"><?= htmlspecialchars($message['message']) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td class="empty" colspan="3">Aucune réservation enregistrée.</td>
+                            <td class="empty" colspan="3">Aucun message enregistré.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

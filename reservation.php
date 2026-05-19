@@ -2,23 +2,31 @@
 
 include 'connexion_db/connexion.php';
 
+$message = "";
+$message_type = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $nom = $_POST['nom'];
-    $nbre_personne = $_POST['selectionner'];
-    $date_heure = $_POST['datte'];
+    $nom = trim($_POST['nom'] ?? '');
+    $nbre_personne = $_POST['selectionner'] ?? '';
+    $date_heure = str_replace('T', ' ', $_POST['datte'] ?? '');
 
-    $sql = "INSERT INTO reservation(nom_client, nbre_personnes, date_reservation) VALUES (?, ?, ?)";
+    if ($nom === '' || $nbre_personne === '' || $date_heure === '') {
+        $message = "Veuillez remplir tous les champs.";
+        $message_type = "error";
+    } else {
+        $sql = "INSERT INTO reservation(nom_client, nbre_personnes, date_reservation) VALUES (?, ?, ?)";
 
-    $stmt = $connexion->prepare($sql);
+        $stmt = $connexion->prepare($sql);
 
-    $stmt->execute([$nom,$nbre_personne,$date_heure]);
-
-    if ($stmt->execute()) {
-    echo "<script>alert('Réservation enregistrée avec succès');</script>";
-} else {
-    echo "<script>alert('Erreur lors de la réservation');</script>";
-}
+        if ($stmt->execute([$nom, $nbre_personne, $date_heure])) {
+            $message = "Réservation enregistrée avec succès.";
+            $message_type = "success";
+        } else {
+            $message = "Erreur lors de la réservation.";
+            $message_type = "error";
+        }
+    }
 }
 
 ?>
@@ -69,17 +77,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         form{
           margin: auto;
-          width: 930px;
-          margin-top: 50px;
+          max-width: 930px;
+          width: 90%;
+          margin-top: 10px;
+          background: rgba(0, 0, 0, 0.35);
+          padding: 28px;
+          border-radius: 12px;
+        }
+        .form-fields{
+          display: grid;
+          grid-template-columns: repeat(3, minmax(180px, 1fr));
+          gap: 12px;
         }
         input,
         select,
         button{
-          padding: 7px;
+          padding: 12px;
+          border-radius: 6px;
         }
         button{
           border: 0;
           background: orange;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+          min-width: 220px;
+          transition: 0.3s;
+        }
+        button:hover{
+          background: #e67e22;
         }
         input,
         select{
@@ -94,8 +120,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         select{
           color: white;
         }
+        option{
+          color: #333;
+        }
         #datte{
           color: white;
+        }
+        .message{
+          display: block;
+          margin-bottom: 15px;
+          font-weight: bold;
+        }
+        .message.success{
+          color: #28a745;
+        }
+        .message.error{
+          color: #ff4d4d;
+        }
+        @media screen and (max-width: 800px){
+          header{
+            height: auto;
+            min-height: 100vh;
+            padding-bottom: 40px;
+          }
+          .form-fields{
+            grid-template-columns: 1fr;
+          }
+          .SUBLIMINAL{
+            font-size: 36px;
+          }
+          .Bienvenu{
+            font-size: 48px;
+          }
         }
     </style>
 </head>
@@ -114,38 +170,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </span>
         </center>
         <section>
-       <form>
+       <form action="" method="POST" id="reservationForm">
         <center>
              <h3 style="color: orange; font-family: Edwardian Script ITC Regular; font-size: 50px;">
             ____ <br>
             Réservation
           </h3>
-          <span id="verif_msg">
+          <?php if ($message !== ''): ?>
+            <span class="message <?= $message_type ?>">
+              <?= htmlspecialchars($message) ?>
+            </span>
+          <?php endif; ?>
+          <span id="verif_msg" class="message error">
 
           </span>
-          <input type="text" name="nom" id="nom" placeholder="nom">
-          <select name="selectionner" id="selection">
-            <option value="1personne">
-              Pour une personne
-            </option>
-            <option value="2personnes">
-              Pour 2 personnes
-            </option>
-            <option value="3personnes">
-              Pour 3 personnes
-            </option>
-            <option value="famille">
-              Pour la famille
-            </option>
-            <option value="mariage">
-              Mariage
-            </option>
-            <option value="anniversaire">
-              Anniversaire
-            </option>
-          </select>
-          <input type="datetime-local" name="datte" id="datte"><br><br>
-          <button type="button" onclick="verif_nom()">
+          <div class="form-fields">
+            <input type="text" name="nom" id="nom" placeholder="Nom" required>
+            <select name="selectionner" id="selection" required>
+              <option value="">
+                Choisir le nombre de personnes
+              </option>
+              <option value="1 personne">
+                Pour une personne
+              </option>
+              <option value="2 personnes">
+                Pour 2 personnes
+              </option>
+              <option value="3 personnes">
+                Pour 3 personnes
+              </option>
+              <option value="Famille">
+                Pour la famille
+              </option>
+              <option value="Mariage">
+                Mariage
+              </option>
+              <option value="Anniversaire">
+                Anniversaire
+              </option>
+            </select>
+            <input type="datetime-local" name="datte" id="datte" required>
+          </div>
+          <br>
+          <button type="submit">
             Réserver une table
           </button>
         </center>
@@ -153,16 +220,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </section>
     </header>
     <script type="text/javascript">
-      function verif_nom(){
+      document.getElementById("reservationForm").addEventListener("submit", function(event){
         var nom = document.getElementById("nom").value;
-          if (nom.length <= 0){
+        var selection = document.getElementById("selection").value;
+        var datte = document.getElementById("datte").value;
+
+          if (nom.trim().length <= 0){
+            event.preventDefault();
             document.getElementById("verif_msg").innerHTML = "Nom obligatoire";
             document.getElementById("verif_msg").style.color = "red";
           }
-          else{
-            document.getElementById("verif_msg").style.display = "none";
+          else if (selection.length <= 0){
+            event.preventDefault();
+            document.getElementById("verif_msg").innerHTML = "Veuillez choisir le nombre de personnes";
+            document.getElementById("verif_msg").style.color = "red";
           }
-      }
+          else if (datte.length <= 0){
+            event.preventDefault();
+            document.getElementById("verif_msg").innerHTML = "Veuillez choisir la date et l'heure";
+            document.getElementById("verif_msg").style.color = "red";
+          }
+          else{
+            document.getElementById("verif_msg").innerHTML = "";
+          }
+      });
     </script>
 </body>
 </html>
