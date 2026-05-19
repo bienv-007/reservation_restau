@@ -1,10 +1,10 @@
 <?php 
 session_start();
+require '../connexion_db/connexion.php';
 if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
     header("Location: authentification.php");
     exit();
 }
-require 'connexion_db/connexion.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -114,6 +114,10 @@ require 'connexion_db/connexion.php';
 
         .status-ready { background: #d4edda; color: #155724; }
         .status-pending { background: #fff3cd; color: #856404; }
+        a{
+            text-decoration: none;
+            color: var(--light);
+        }
     </style>
 </head>
 <body>
@@ -121,11 +125,11 @@ require 'connexion_db/connexion.php';
     <div class="sidebar">
         <h2>RestoAdmin</h2>
         <ul class="nav-links">
-            <li>Tableau de bord</li>
-            <li>Menu (Plats)</li>
-            <li>Commandes</li>
-            <li>Réservations</li>
-            <li>Paramètres</li>
+            <a href="index.php"><li>Tableau de bord</li></a>
+            <a href="recettes.php"><li>Recettes (Plats)</li></a>
+            <a href="commandes.php"><li>Commandes</li></a>
+            <a href="reservations.php"><li>Réservations</li></a>
+            <a href="deconnexion.php"><li>Se deconnecter</li></a>
         </ul>
     </div>
 
@@ -137,18 +141,32 @@ require 'connexion_db/connexion.php';
 
         <div class="stats-grid">
             <div class="card">
-                <p>Commandes</p>
-                <h3>24</h3>
+                <p>Messages</p>
+                <h3>
+                    <?php 
+                        $requete = $connexion->query("select count(*) as total from contacts");
+                        $donnee = $requete->fetch();
+                        echo $donnee['total'];
+                    ?>
+                </h3>
             </div>
             <div class="card">
-                <p>Chiffre d'Affaire</p>
-                <h3>1 250€</h3>
+                <p>Reservations</p>
+                <h3>
+                    <?php 
+                        $requete = $connexion->query("select count(*) as total from reservation");
+                        $donnee = $requete->fetch();
+                        echo $donnee['total'];
+                    ?>
+                </h3>
             </div>
             <div class="card">
                 <p>Membres de la newsletter</p>
                 <h3>
                     <?php 
-                        
+                        $requete = $connexion->query("select count(*) as total from news_letter");
+                        $donnee = $requete->fetch();
+                        echo $donnee['total'];
                     ?>
 
                 </h3>
