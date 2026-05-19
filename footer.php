@@ -43,7 +43,7 @@ if (isset($_POST['email'])) {
     <hr>
 
     <span>
-        Adresse : Kinshasa, République Démocratique du Congo
+        Adresse : Beni, République Démocratique du Congo
     </span>
 
     <br>
