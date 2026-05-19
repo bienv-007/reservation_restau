@@ -4,6 +4,7 @@ if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
     header("Location: authentification.php");
     exit();
 }
+require 'connexion_db/connexion.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -131,7 +132,7 @@ if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
     <div class="main-content">
         <div class="header">
             <h1>Vue d'ensemble</h1>
-            <div class="user-info">Admin : Jean Bon</div>
+            <div class="user-info">Admin : <?= $_SESSION['admin']?></div>
         </div>
 
         <div class="stats-grid">
@@ -144,8 +145,13 @@ if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
                 <h3>1 250€</h3>
             </div>
             <div class="card">
-                <p>Nouveaux Clients</p>
-                <h3>12</h3>
+                <p>Membres de la newsletter</p>
+                <h3>
+                    <?php 
+                        
+                    ?>
+
+                </h3>
             </div>
         </div>
 
