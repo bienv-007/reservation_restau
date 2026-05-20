@@ -11,13 +11,136 @@ $message = "";
 $message_type = "";
 $formats_autorises = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
 $dossier_upload = __DIR__ . '/uploads_recettes/';
+$recette_a_modifier = null;
+
+function supprimer_image_recette($image)
+{
+    $prefixe = 'admin/uploads_recettes/';
+
+    if (strpos($image, $prefixe) !== 0) {
+        return;
+    }
+
+    $chemin = __DIR__ . '/uploads_recettes/' . basename($image);
+
+    if (is_file($chemin)) {
+        @unlink($chemin);
+    }
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $action = $_POST['action'] ?? 'create';
     $titre = trim($_POST['titre'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $photo = $_FILES['photo'] ?? null;
 
-    if ($titre === '' || $description === '' || !$photo || $photo['error'] !== UPLOAD_ERR_OK) {
+    if ($action === 'delete') {
+        $id = (int) ($_POST['id'] ?? 0);
+
+        if ($id <= 0) {
+            $message = "Recette introuvable.";
+            $message_type = "error";
+        } else {
+            $requete = $connexion->prepare("SELECT image FROM recettes WHERE id = ?");
+            $requete->execute([$id]);
+            $recette = $requete->fetch(PDO::FETCH_ASSOC);
+
+            if (!$recette) {
+                $message = "Recette introuvable.";
+                $message_type = "error";
+            } else {
+                $suppression = $connexion->prepare("DELETE FROM recettes WHERE id = ?");
+
+                if ($suppression && $suppression->execute([$id])) {
+                    supprimer_image_recette($recette['image']);
+                    $message = "Recette supprimée avec succès.";
+                    $message_type = "success";
+                } else {
+                    $message = "Erreur lors de la suppression de la recette.";
+                    $message_type = "error";
+                }
+            }
+        }
+    } elseif ($action === 'update') {
+        $id = (int) ($_POST['id'] ?? 0);
+
+        if ($id <= 0 || $titre === '' || $description === '') {
+            $message = "Veuillez remplir tous les champs obligatoires.";
+            $message_type = "error";
+        } else {
+            $requete = $connexion->prepare("SELECT image FROM recettes WHERE id = ?");
+            $requete->execute([$id]);
+            $recette = $requete->fetch(PDO::FETCH_ASSOC);
+
+            if (!$recette) {
+                $message = "Recette introuvable.";
+                $message_type = "error";
+            } else {
+                $lien_image = $recette['image'];
+                $image_a_remplacer = false;
+
+                if ($photo && $photo['error'] !== UPLOAD_ERR_NO_FILE) {
+                    if ($photo['error'] !== UPLOAD_ERR_OK) {
+                        $message = "Erreur lors de l'upload de l'image.";
+                        $message_type = "error";
+                    } else {
+                        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                        $type_fichier = finfo_file($finfo, $photo['tmp_name']);
+                        finfo_close($finfo);
+
+                        if (!array_key_exists($type_fichier, $formats_autorises)) {
+                            $message = "Format invalide. Seules les images JPEG et PNG sont autorisées.";
+                            $message_type = "error";
+                        } elseif (!is_dir($dossier_upload) || !is_writable($dossier_upload)) {
+                            $message = "Le dossier d'upload n'est pas accessible en écriture.";
+                            $message_type = "error";
+                        } else {
+                            $extension = $formats_autorises[$type_fichier];
+                            $nom_fichier = uniqid('recette_', true) . '.' . $extension;
+                            $chemin_destination = $dossier_upload . $nom_fichier;
+
+                            if (@move_uploaded_file($photo['tmp_name'], $chemin_destination)) {
+                                $lien_image = 'admin/uploads_recettes/' . $nom_fichier;
+                                $image_a_remplacer = true;
+                            } else {
+                                $message = "Erreur lors de l'upload de l'image.";
+                                $message_type = "error";
+                            }
+                        }
+                    }
+                }
+
+                if ($message_type !== "error") {
+                    $mise_a_jour = $connexion->prepare("UPDATE recettes SET titre = ?, description = ?, image = ? WHERE id = ?");
+
+                    if ($mise_a_jour && $mise_a_jour->execute([$titre, $description, $lien_image, $id])) {
+                        if ($image_a_remplacer) {
+                            supprimer_image_recette($recette['image']);
+                        }
+
+                        $message = "Recette modifiée avec succès.";
+                        $message_type = "success";
+                    } else {
+                        if ($image_a_remplacer) {
+                            supprimer_image_recette($lien_image);
+                        }
+
+                        $message = "Erreur lors de la modification de la recette.";
+                        $message_type = "error";
+                    }
+                }
+
+                if ($message_type === "error") {
+                    $recette_a_modifier = [
+                        'id' => $id,
+                        'titre' => $titre,
+                        'description' => $description,
+                        'image' => $recette['image']
+                    ];
+                }
+            }
+        }
+    } elseif ($titre === '' || $description === '' || !$photo || $photo['error'] !== UPLOAD_ERR_OK) {
         $message = "Veuillez remplir tous les champs et choisir une photo.";
         $message_type = "error";
     } else {
@@ -55,8 +178,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+if (isset($_GET['modifier'])) {
+    $id_modifier = (int) $_GET['modifier'];
+
+    if ($id_modifier > 0) {
+        $requete = $connexion->prepare("SELECT id, titre, description, image FROM recettes WHERE id = ?");
+        $requete->execute([$id_modifier]);
+        $recette_a_modifier = $requete->fetch(PDO::FETCH_ASSOC);
+
+        if (!$recette_a_modifier && $message === '') {
+            $message = "Recette introuvable.";
+            $message_type = "error";
+        }
+    }
+}
+
 $recettes = [];
-$requete = $connexion->query("SELECT titre, description, image, date_publication FROM recettes ORDER BY date_publication DESC");
+$requete = $connexion->query("SELECT id, titre, description, image, date_publication FROM recettes ORDER BY date_publication DESC");
 
 if ($requete) {
     $recettes = $requete->fetchAll(PDO::FETCH_ASSOC);
@@ -178,6 +316,18 @@ if ($requete) {
             cursor: pointer;
         }
 
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cancel-link {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -221,6 +371,40 @@ if ($requete) {
             padding: 24px;
         }
 
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 6px;
+            color: var(--white);
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #2980b9;
+        }
+
+        .delete-btn {
+            background: #c0392b;
+            padding: 0;
+        }
+
+        .delete-form {
+            display: inline;
+            max-width: none;
+        }
+
         a {
             text-decoration: none;
             color: var(--light);
@@ -246,28 +430,41 @@ if ($requete) {
         </div>
 
         <div class="panel">
-            <h3>Publier une recette</h3>
+            <h3><?= $recette_a_modifier ? 'Modifier une recette' : 'Publier une recette' ?></h3>
             <?php if ($message !== ''): ?>
                 <span class="message <?= $message_type ?>"><?= htmlspecialchars($message) ?></span>
             <?php endif; ?>
 
             <form action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="<?= $recette_a_modifier ? 'update' : 'create' ?>">
+                <?php if ($recette_a_modifier): ?>
+                    <input type="hidden" name="id" value="<?= (int) $recette_a_modifier['id'] ?>">
+                <?php endif; ?>
+
                 <div>
                     <label for="titre">Titre</label>
-                    <input type="text" name="titre" id="titre" maxlength="150" required>
+                    <input type="text" name="titre" id="titre" maxlength="150" value="<?= htmlspecialchars($recette_a_modifier['titre'] ?? '') ?>" required>
                 </div>
 
                 <div>
                     <label for="description">Description courte</label>
-                    <textarea name="description" id="description" maxlength="255" required></textarea>
+                    <textarea name="description" id="description" maxlength="255" required><?= htmlspecialchars($recette_a_modifier['description'] ?? '') ?></textarea>
                 </div>
 
                 <div>
-                    <label for="photo">Photo JPEG ou PNG</label>
-                    <input type="file" name="photo" id="photo" accept="image/jpeg,image/png" required>
+                    <label for="photo">Photo JPEG ou PNG<?= $recette_a_modifier ? ' (optionnelle)' : '' ?></label>
+                    <?php if ($recette_a_modifier): ?>
+                        <p><img src="../<?= htmlspecialchars($recette_a_modifier['image']) ?>" alt="<?= htmlspecialchars($recette_a_modifier['titre']) ?>" class="thumb"></p>
+                    <?php endif; ?>
+                    <input type="file" name="photo" id="photo" accept="image/jpeg,image/png" <?= $recette_a_modifier ? '' : 'required' ?>>
                 </div>
 
-                <button type="submit">Publier</button>
+                <div class="form-actions">
+                    <button type="submit"><?= $recette_a_modifier ? 'Enregistrer' : 'Publier' ?></button>
+                    <?php if ($recette_a_modifier): ?>
+                        <a class="cancel-link" href="recettes.php">Annuler</a>
+                    <?php endif; ?>
+                </div>
             </form>
         </div>
 
@@ -280,6 +477,7 @@ if ($requete) {
                         <th>Titre</th>
                         <th>Description</th>
                         <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -290,11 +488,21 @@ if ($requete) {
                                 <td><?= htmlspecialchars($recette['titre']) ?></td>
                                 <td><?= htmlspecialchars($recette['description']) ?></td>
                                 <td><?= htmlspecialchars($recette['date_publication']) ?></td>
+                                <td>
+                                    <div class="actions">
+                                        <a class="icon-btn edit-btn" href="recettes.php?modifier=<?= (int) $recette['id'] ?>" title="Modifier" aria-label="Modifier la recette">&#9998;</a>
+                                        <form class="delete-form" action="" method="POST" onsubmit="return confirm('Supprimer cette recette ?');">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="id" value="<?= (int) $recette['id'] ?>">
+                                            <button class="icon-btn delete-btn" type="submit" title="Supprimer" aria-label="Supprimer la recette">&#128465;</button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td class="empty" colspan="4">Aucune recette publiée.</td>
+                            <td class="empty" colspan="5">Aucune recette publiée.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
