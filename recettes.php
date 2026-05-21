@@ -129,7 +129,7 @@ if ($requete) {
                         <p><?= htmlspecialchars($recette['description']) ?></p>
                     </div>
                     <div>
-                        <a href="#" class="monlien">Commander</a>
+                        <a href="#" class="monlien">En savoir plus</a>
                     </div>
                 </div>
             </div>
