@@ -50,7 +50,7 @@ Application web de réservation et de gestion pour le restaurant **THE SUBLIMINA
 - **Bootstrap 5** via CDN pour la mise en page responsive.
 - **XAMPP / LAMPP** comme environnement local recommandé.
 
-## Prérequis
+## Prérequis si vous voulez l'essayer chez vous
 
 Avant de lancer le projet, assurez-vous d'avoir :
 
