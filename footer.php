@@ -1,4 +1,5 @@
 <?php
+require 'connexion_db/connexion.php';
 if (isset($_POST['email'])) {
 
     // $nom = $_POST['nom'];

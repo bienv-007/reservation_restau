@@ -2,48 +2,6 @@
 // Détecter la page courante
 $page = basename($_SERVER['PHP_SELF']);
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE SUBLIMINAL</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        /* Override Bootstrap */
-        .navbar-light .nav-link {
-            color: inherit !important;
-        }
-
-        /* Styles par défaut */
-        .custom-navbar .nav-link {
-            color: black;
-        }
-
-        /* Variantes par page */
-        .nav-home .nav-link {
-            color: white;
-        }
-
-        /* Lien actif */
-        .nav-link.active {
-            font-weight: bold;
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<body class="<?php
-    if($page == 'index.php') echo 'nav-home';
-    elseif($page == 'recettes.php') echo 'nav-recettes';
-    elseif($page == 'apropos.php') echo 'nav-apropos';
-    elseif($page == 'reservation.php') echo 'nav-reservation';
-    elseif($page == 'contact.php') echo 'nav-contact';
-?>">
-
 <nav class="navbar navbar-expand-lg custom-navbar">
     <div class="container">
         <a class="navbar-brand" href="index.php">THE SUBLIMINAL</a>
@@ -81,8 +39,11 @@ $page = basename($_SERVER['PHP_SELF']);
                 </li>
 
             </ul>
+            <div class="theme-switcher" aria-label="Choisir le thème">
+                <button class="theme-option" type="button" data-theme-choice="system" title="Suivre le thème de l'ordinateur">Auto</button>
+                <button class="theme-option" type="button" data-theme-choice="light" title="Mode clair">Clair</button>
+                <button class="theme-option" type="button" data-theme-choice="dark" title="Mode sombre">Sombre</button>
+            </div>
         </div>
     </div>
 </nav>
-
-<br><br><br>

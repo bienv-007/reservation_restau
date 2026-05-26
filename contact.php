@@ -169,10 +169,19 @@ if (isset($_POST['nom']) && isset($_POST['email']) && isset($_POST['message'])) 
         }
 
     </style>
+    <script>
+        (function () {
+            var preference = localStorage.getItem("theme-preference") || "system";
+            var isDark = preference === "dark" || (preference === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+            document.documentElement.dataset.theme = isDark ? "dark" : "light";
+        })();
+    </script>
+    <link href="css/theme.css" rel="stylesheet">
+    <script src="js/theme.js" defer></script>
 
 </head>
 
-<body>
+<body class="nav-contact">
 
     <header>
 

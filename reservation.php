@@ -153,9 +153,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 48px;
           }
         }
+
+        body.nav-reservation header{
+          min-height: 100svh;
+          height: auto;
+          display: flex;
+          flex-direction: column;
+          background: var(--hero-overlay), url("img/reservation.jpg") center/cover no-repeat;
+        }
+
+        body.nav-reservation header center{
+          padding: clamp(34px, 6vw, 70px) 0 clamp(20px, 4vw, 36px);
+        }
+
+        .reservation-section{
+          width: min(980px, calc(100% - 32px));
+          margin: 0 auto clamp(42px, 7vw, 76px);
+        }
+
+        #reservationForm{
+          width: 100%;
+          max-width: none;
+          margin-top: 0;
+          padding: clamp(22px, 4vw, 38px);
+        }
+
+        .reservation-title{
+          margin-bottom: 22px;
+          color: var(--accent) !important;
+          font-family: "Brush Script MT", "Segoe Script", cursive;
+          font-size: clamp(2.2rem, 6vw, 3.7rem);
+          line-height: 1;
+        }
+
+        .form-fields input,
+        .form-fields select{
+          min-height: 54px;
+          width: 100%;
+          border-radius: 12px;
+        }
+
+        #reservationForm button[type="submit"]{
+          width: min(280px, 100%);
+          min-height: 52px;
+        }
+
+        .message.success{
+          color: #1f9d55 !important;
+        }
+
+        .message.error{
+          color: #ff5c5c !important;
+        }
+
+        @media screen and (max-width: 800px){
+          body.nav-reservation header{
+            min-height: 100svh;
+          }
+
+          .reservation-section{
+            width: min(100% - 24px, 560px);
+          }
+        }
     </style>
+    <script>
+        (function () {
+            var preference = localStorage.getItem("theme-preference") || "system";
+            var isDark = preference === "dark" || (preference === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+            document.documentElement.dataset.theme = isDark ? "dark" : "light";
+        })();
+    </script>
+    <link href="css/theme.css" rel="stylesheet">
+    <script src="js/theme.js" defer></script>
 </head>
-<body>
+<body class="nav-reservation">
     <header>
         <?php include 'entete.php';?>
         <center>
@@ -169,11 +240,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             RESTO A L'AFRICAINE
           </span>
         </center>
-        <section>
+        <section class="reservation-section">
        <form action="" method="POST" id="reservationForm">
         <center>
-             <h3 style="color: orange; font-family: Edwardian Script ITC Regular; font-size: 50px;">
-            ____ <br>
+             <h3 class="reservation-title">
             Réservation
           </h3>
           <?php if ($message !== ''): ?>
