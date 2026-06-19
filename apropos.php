@@ -90,7 +90,7 @@
 
     <header>
 
-        <?php include 'entete.php';?>
+        <?php include 'entete.php';?> <!-- inclusion de l'entête donc de la page header.php -->
 
         <center>
 
@@ -135,6 +135,6 @@
         </div>
 
     </center>
-<?php include 'footer.php';?>
+<?php include 'footer.php';?> <!-- inclusion du footer donc de la page footer.php -->
 </body>
 </html>

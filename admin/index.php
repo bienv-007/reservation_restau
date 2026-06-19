@@ -172,34 +172,6 @@ if (!isset($_SESSION['admin']) && !isset($_SESSION['mdp'])) {
                 </h3>
             </div>
         </div>
-
-        <div class="table-container">
-            <h3>Dernières Commandes</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Table</th>
-                        <th>Commande</th>
-                        <th>Prix</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Table 5</td>
-                        <td>Burger Deluxe + Frites</td>
-                        <td>18.50€</td>
-                        <td><span class="status status-ready">Prêt</span></td>
-                    </tr>
-                    <tr>
-                        <td>Table 2</td>
-                        <td>Pizza Margherita</td>
-                        <td>12.00€</td>
-                        <td><span class="status status-pending">En cuisine</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
 
 </body>
